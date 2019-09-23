@@ -89,3 +89,27 @@ tradeFee =
 cessFeePercent : Float
 cessFeePercent =
     0.3
+
+
+gctPercent : Float
+gctPercent =
+    16.5
+
+
+calculateMaxShares : String -> String -> Int
+calculateMaxShares avaliableCash pricePerStock =
+    let
+        maxAmount =
+            toCents avaliableCash // toCents pricePerStock
+
+        minAmountPrice =
+            toCents pricePerStock * 100
+
+        avaliableCashCents =
+            toCents avaliableCash
+    in
+    if minAmountPrice < avaliableCashCents then
+        0
+
+    else
+        1
