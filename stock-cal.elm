@@ -61,7 +61,7 @@ view model =
     div []
         [ viewInput "text" "total cash" model.avaliableCash AvaliableCash
         , viewInput "text" "price per stock" model.pricePerStock PricePerStock
-        , div [] [ text "Max amount for stock is:" ]
+        , div [] [ text "Max # of stocks:" ]
         , div [] [ text <| String.fromInt (toCents model.avaliableCash // toCents model.pricePerStock) ]
         ]
 
@@ -74,3 +74,18 @@ viewInput t p v toMsg =
 toCents : String -> Int
 toCents val =
     Maybe.withDefault 0.0 (String.toFloat val) |> (*) 100 |> Basics.truncate
+
+
+commissionPercent : Float
+commissionPercent =
+    0.02
+
+
+tradeFee : Int
+tradeFee =
+    100000
+
+
+cessFeePercent : Float
+cessFeePercent =
+    0.3
