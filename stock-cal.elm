@@ -1,6 +1,7 @@
-module Main exposing (Model, Msg(..), init, main, toCents, update, view, viewInput)
+module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
+import Decimal exposing (Decimal)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
@@ -62,7 +63,7 @@ view model =
         [ viewInput "text" "total cash" model.avaliableCash AvaliableCash
         , viewInput "text" "price per stock" model.pricePerStock PricePerStock
         , div [] [ text "Max # of stocks:" ]
-        , div [] [ text <| String.fromInt (toCents model.avaliableCash // toCents model.pricePerStock) ]
+        , div [] [ text <| calculateMaxShares model.avaliableCash model.pricePerStock ]
         ]
 
 
@@ -71,45 +72,48 @@ viewInput t p v toMsg =
     input [ type_ t, placeholder p, value v, onInput toMsg ] []
 
 
-toCents : String -> Int
+toCents : String -> Decimal
 toCents val =
-    Maybe.withDefault 0.0 (String.toFloat val) |> (*) 100 |> Basics.truncate
+    Maybe.withDefault (Decimal.fromInt 0) (Decimal.fromString val)
 
 
-commissionPercent : Float
+commissionPercent : Decimal
 commissionPercent =
-    0.02
+    Maybe.withDefault (Decimal.fromInt -1) (0.02 |> Decimal.fromFloat)
 
 
-tradeFee : Int
+tradeFee : Decimal
 tradeFee =
-    100000
+    1000 |> Decimal.fromInt
 
 
-cessFeePercent : Float
+cessFeePercent : Decimal
 cessFeePercent =
-    0.3
+    Maybe.withDefault (Decimal.fromInt -1) (0.3 |> Decimal.fromFloat)
 
 
-gctPercent : Float
+gctPercent : Decimal
 gctPercent =
-    16.5
+    Maybe.withDefault (Decimal.fromInt -1) (16.5 |> Decimal.fromFloat)
 
 
-calculateMaxShares : String -> String -> Int
+calculateMaxShares : String -> String -> String
 calculateMaxShares avaliableCash pricePerStock =
     let
+        cash =
+            toCents avaliableCash
+
+        price =
+            toCents pricePerStock
+
         maxAmount =
-            toCents avaliableCash // toCents pricePerStock
+            Maybe.withDefault (Decimal.fromInt 0) (Decimal.fastdiv cash price)
 
         minAmountPrice =
-            toCents pricePerStock * 100
-
-        avaliableCashCents =
-            toCents avaliableCash
+            price |> Decimal.mul (toCents "100")
     in
-    if minAmountPrice < avaliableCashCents then
-        0
+    if Decimal.gt minAmountPrice cash then
+        "Not enought funds to buy shares."
 
     else
-        1
+        Decimal.truncate 0 maxAmount |> Decimal.toString
