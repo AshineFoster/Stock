@@ -1,6 +1,7 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
+import Debug
 import Decimal exposing (Decimal)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -65,7 +66,7 @@ view model =
         , div [] [ text "Max # of stocks:" ]
         , div [] [ text <| calculateMaxShares model.avaliableCash model.pricePerStock ]
 
-        -- , div [ style "font-family" "sans-serif" ] [ text <| String.append "Total for 10,000 shares at $1.75: $" (Decimal.toString <| fullCal 10000 (Maybe.withDefault (Decimal.minusOne) (1.75 |> Decimal.fromFloat))) ]
+        -- , div [] [ text <| Decimal.toString <| fullCal (Decimal.fromInt 11053) (Maybe.withDefault Decimal.minusOne (1.75 |> Decimal.fromFloat)) ]
         ]
 
 
@@ -125,15 +126,20 @@ calculateMaxShares avaliableCash pricePerStock =
             fullCal minShares price
     in
     if Decimal.gt minAmountPrice cash then
-        "Not enought funds to buy shares."
+        "Not enought funds to buy shares.\n" ++ "Amount needed to buy " ++ Decimal.toString minShares ++ " shares is $" ++ Decimal.toString minAmountPrice ++ "."
 
     else
-        Decimal.truncate 0 (findMaxShares maxShares price cash) |> Decimal.toString
+        Decimal.truncate 0 (findMaxShares maxShares minShares price cash) |> Decimal.toString
 
 
-findMaxShares : Decimal -> Decimal -> Decimal -> Decimal
-findMaxShares maxShares price cash =
-    price
+findMaxShares : Decimal -> Decimal -> Decimal -> Decimal -> Decimal
+findMaxShares maxShare minShare price cash =
+    -- TODO: write function to calculate the max number of shares
+    if Decimal.lte (fullCal maxShare price) cash then
+        maxShare
+
+    else
+        findMaxShares (Decimal.sub maxShare Decimal.one) minShare price cash
 
 
 fullCal : Decimal -> Decimal -> Decimal
