@@ -66,7 +66,7 @@ view model =
         , div [] [ text "Max # of stocks:" ]
         , div [] [ text <| calculateMaxShares model.avaliableCash model.pricePerStock ]
 
-        -- , div [] [ text <| Decimal.toString <| fullCal (Decimal.fromInt 11053) (Maybe.withDefault Decimal.minusOne (1.75 |> Decimal.fromFloat)) ]
+        -- , div [] [ text <| Decimal.toString <| fullCal (Decimal.fromInt 10000) (Maybe.withDefault Decimal.minusOne (1.75 |> Decimal.fromFloat)) ]
         ]
 
 
@@ -135,8 +135,9 @@ calculateMaxShares avaliableCash pricePerStock =
 findMaxShares : Decimal -> Decimal -> Decimal -> Decimal -> Decimal
 findMaxShares maxShare minShare price cash =
     -- TODO: write function to calculate the max number of shares
+    -- stop condition: if (maxShare <= cash) and (maxShare > cash - price)
     if Decimal.lte (fullCal maxShare price) cash then
-        maxShare
+        Decimal.add Decimal.one maxShare
 
     else
         findMaxShares (Decimal.sub maxShare Decimal.one) minShare price cash
