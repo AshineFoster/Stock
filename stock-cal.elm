@@ -1,8 +1,6 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
-import Debug
-import Decimal exposing (Decimal)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
@@ -63,7 +61,8 @@ view model =
     div []
         [ viewInput "text" "total cash" model.avaliableCash AvaliableCash
         , viewInput "text" "price per stock" model.pricePerStock PricePerStock
-        , div [] [ text "Max # of stocks:" ]
+
+        -- , div [] [ text "Max # of stocks:" ]
         , div [] [ text <| calculateMaxShares model.avaliableCash model.pricePerStock ]
 
         -- , div [] [ text <| Decimal.toString <| fullCal (Decimal.fromInt 10000) (Maybe.withDefault Decimal.minusOne (1.75 |> Decimal.fromFloat)) ]
@@ -75,98 +74,158 @@ viewInput t p v toMsg =
     input [ type_ t, placeholder p, value v, onInput toMsg ] []
 
 
-strToDecimal : String -> Decimal
-strToDecimal val =
-    Maybe.withDefault Decimal.zero (Decimal.fromString val)
+toCents : String -> Int
+toCents val =
+    Maybe.withDefault 0 (String.toFloat val)
+        |> (*) 100
+        |> truncate
 
 
-commission : Decimal
+dolToCents : Float -> Int
+dolToCents dollars =
+    dollars * 100.0 |> truncate
+
+
+toDollars : Int -> Float
+toDollars cents =
+    toFloat cents / 100
+
+
+commission : Float
 commission =
-    Maybe.withDefault Decimal.minusOne (0.0002 |> Decimal.fromFloat)
+    0.02
 
 
-tradeFee : Decimal
+tradeFee : Int
 tradeFee =
-    1000 |> Decimal.fromInt
+    0
 
 
-cessFee : Decimal
+cessFee : Float
 cessFee =
-    Maybe.withDefault Decimal.minusOne (0.0033 |> Decimal.fromFloat)
+    0.0033
 
 
-gct : Decimal
+gct : Float
 gct =
-    Maybe.withDefault Decimal.minusOne (0.165 |> Decimal.fromFloat)
+    0.165
 
 
-minShares : Decimal
+minShares : Int
 minShares =
-    Decimal.fromInt 100
+    100
 
 
-minCommission : Decimal
+minCommission : Int
 minCommission =
-    Decimal.fromInt 500
+    50000
+
+
+
+-- The maximum that can be entered without causing integer overflow: 21474836.47
 
 
 calculateMaxShares : String -> String -> String
 calculateMaxShares avaliableCash pricePerStock =
     let
         cash =
-            Decimal.truncate -2 (strToDecimal avaliableCash)
+            toCents avaliableCash
 
         price =
-            Decimal.truncate -2 (strToDecimal pricePerStock)
+            toCents pricePerStock
 
         maxShares =
-            Maybe.withDefault Decimal.zero (Decimal.fastdiv cash price)
+            cash // price
+
+        temp =
+            fullCal minShares price
 
         minAmountPrice =
-            fullCal minShares price
+            temp.fin
     in
-    if Decimal.gt minAmountPrice cash then
-        "Not enought funds to buy shares.\n" ++ "Amount needed to buy " ++ Decimal.toString minShares ++ " shares is $" ++ Decimal.toString minAmountPrice ++ "."
+    if minAmountPrice > cash then
+        "Not enought funds to buy shares. "
+            ++ "Amount needed to buy "
+            ++ String.fromInt minShares
+            ++ " shares is $"
+            ++ (toDollars minAmountPrice |> String.fromFloat)
+            ++ "."
 
     else
-        Decimal.truncate 0 (findMaxShares maxShares minShares price cash) |> Decimal.toString
+        let
+            ans =
+                findMaxShares maxShares minShares price cash
+        in
+        "# of shares: "
+            ++ String.fromInt ans.num
+            ++ ";     Gross Price: $"
+            ++ (String.fromFloat <| toDollars ans.gross)
+            ++ ";     Cess Fee: $"
+            ++ (String.fromFloat <| toDollars ans.ce)
+            ++ ";     Trade Fee: $"
+            ++ (String.fromFloat <| toDollars ans.tr)
+            ++ ";     GCT: $"
+            ++ (String.fromFloat <| toDollars ans.gc)
+            ++ ";     Commission: $"
+            ++ (String.fromFloat <| toDollars ans.comm)
+            ++ ";     Final Price: $"
+            ++ (String.fromFloat <| toDollars ans.fin)
 
 
-findMaxShares : Decimal -> Decimal -> Decimal -> Decimal -> Decimal
+
+-- findMaxShares : Int -> Int -> Int -> Int -> Int
+
+
 findMaxShares maxShare minShare price cash =
     -- TODO: write function to calculate the max number of shares
     -- stop condition: if (maxShare <= cash) and (maxShare > cash - price)
-    if Decimal.lte (fullCal maxShare price) cash then
-        Decimal.add Decimal.one maxShare
+    let
+        priceInfo =
+            fullCal maxShare price
+    in
+    if priceInfo.fin <= cash then
+        priceInfo
 
     else
-        findMaxShares (Decimal.sub maxShare Decimal.one) minShare price cash
+        findMaxShares (maxShare - 1) minShare price cash
 
 
-fullCal : Decimal -> Decimal -> Decimal
+
+-- fullCal : Int -> Int -> {Int -> Int -> Int -> Int -> Int -> Int}
+
+
 fullCal numOfShares pricePerStock =
     let
         grossPrice =
-            Decimal.mul pricePerStock numOfShares
+            pricePerStock * numOfShares
+
+        tempCommission =
+            (toFloat grossPrice * commission) |> truncate
 
         finalCommission =
-            if Decimal.lte (Decimal.mul grossPrice commission) minCommission then
+            if tempCommission < minCommission then
                 minCommission
 
             else
-                pricePerStock
+                tempCommission
 
         cess =
-            Decimal.mul grossPrice cessFee
+            (toFloat grossPrice * cessFee) |> truncate
 
         trade =
-            Decimal.zero
+            tradeFee
 
         gctTax =
-            Decimal.add finalCommission cess |> Decimal.add trade |> Decimal.mul gct
+            toFloat (finalCommission + cess + trade) * gct |> truncate
+
+        finalPrice =
+            grossPrice + cess + trade + gctTax + finalCommission
     in
-    Decimal.add grossPrice cess
-        |> Decimal.add trade
-        |> Decimal.add gctTax
-        |> Decimal.add finalCommission
-        |> Decimal.round -2
+    { gross = grossPrice
+    , comm = finalCommission
+    , ce = cess
+    , tr = trade
+    , gc = gctTax
+    , fin = finalPrice
+    , num = numOfShares
+    }
