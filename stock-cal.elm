@@ -61,11 +61,7 @@ view model =
     div []
         [ viewInput "text" "total cash" model.avaliableCash AvaliableCash
         , viewInput "text" "price per stock" model.pricePerStock PricePerStock
-
-        -- , div [] [ text "Max # of stocks:" ]
-        , div [] [ text <| calculateMaxShares model.avaliableCash model.pricePerStock ]
-
-        -- , div [] [ text <| Decimal.toString <| fullCal (Decimal.fromInt 10000) (Maybe.withDefault Decimal.minusOne (1.75 |> Decimal.fromFloat)) ]
+        , calculateMaxShares model.avaliableCash model.pricePerStock
         ]
 
 
@@ -122,10 +118,10 @@ minCommission =
 
 
 
--- The maximum that can be entered without causing integer overflow: 21474836.47
+-- The maximum that can be entered without causing integer overflow: 21,474,836.47
 
 
-calculateMaxShares : String -> String -> String
+calculateMaxShares : String -> String -> Html msg
 calculateMaxShares avaliableCash pricePerStock =
     let
         cash =
@@ -144,38 +140,69 @@ calculateMaxShares avaliableCash pricePerStock =
             temp.fin
     in
     if minAmountPrice > cash then
-        "Not enought funds to buy shares. "
-            ++ "Amount needed to buy "
-            ++ String.fromInt minShares
-            ++ " shares is $"
-            ++ (toDollars minAmountPrice |> String.fromFloat)
-            ++ "."
+        div [ style "color" "red" ]
+            [ text
+                ("Not enough funds to buy shares. "
+                    ++ "Amount needed to buy "
+                    ++ String.fromInt minShares
+                    ++ " shares is $"
+                    ++ (toDollars minAmountPrice |> String.fromFloat)
+                )
+            ]
 
     else
         let
             ans =
                 findMaxShares maxShares minShares price cash
         in
-        "# of shares: "
-            ++ String.fromInt ans.num
-            ++ ";     Gross Price: $"
-            ++ (String.fromFloat <| toDollars ans.gross)
-            ++ ";     Cess Fee: $"
-            ++ (String.fromFloat <| toDollars ans.ce)
-            ++ ";     Trade Fee: $"
-            ++ (String.fromFloat <| toDollars ans.tr)
-            ++ ";     GCT: $"
-            ++ (String.fromFloat <| toDollars ans.gc)
-            ++ ";     Commission: $"
-            ++ (String.fromFloat <| toDollars ans.comm)
-            ++ ";     Final Price: $"
-            ++ (String.fromFloat <| toDollars ans.fin)
+        table []
+            [ tr []
+                [ th [] [ text "Text" ]
+                , th [] [ text "Amount" ]
+                ]
+            , tr []
+                [ td [] [ text "Number of Shares" ]
+                , td [] [ text (String.fromInt ans.num) ]
+                ]
+            , tr []
+                [ td [] [ text "Gross Price" ]
+                , td [] [ text <| "$ " ++ (String.fromFloat <| toDollars ans.gross) ]
+                ]
+            , tr []
+                [ td [] [ text "Cess Fee" ]
+                , td [] [ text <| "$ " ++ (String.fromFloat <| toDollars ans.ce) ]
+                ]
+            , tr []
+                [ td [] [ text "Trade Fee" ]
+                , td [] [ text <| "$ " ++ (String.fromFloat <| toDollars ans.tr) ]
+                ]
+            , tr []
+                [ td [] [ text "GCT" ]
+                , td [] [ text <| "$ " ++ (String.fromFloat <| toDollars ans.gc) ]
+                ]
+            , tr []
+                [ td [] [ text "Commission" ]
+                , td [] [ text <| "$ " ++ (String.fromFloat <| toDollars ans.comm) ]
+                ]
+            , tr []
+                [ td [] [ text "Final Price" ]
+                , td [] [ text <| "$ " ++ (String.fromFloat <| toDollars ans.fin) ]
+                ]
+            ]
 
 
+type alias Info =
+    { gross : Int
+    , comm : Int
+    , ce : Int
+    , tr : Int
+    , gc : Int
+    , fin : Int
+    , num : Int
+    }
 
--- findMaxShares : Int -> Int -> Int -> Int -> Int
 
-
+findMaxShares : Int -> Int -> Int -> Int -> Info
 findMaxShares maxShare minShare price cash =
     -- TODO: write function to calculate the max number of shares
     -- stop condition: if (maxShare <= cash) and (maxShare > cash - price)
@@ -190,10 +217,7 @@ findMaxShares maxShare minShare price cash =
         findMaxShares (maxShare - 1) minShare price cash
 
 
-
--- fullCal : Int -> Int -> {Int -> Int -> Int -> Int -> Int -> Int}
-
-
+fullCal : Int -> Int -> Info
 fullCal numOfShares pricePerStock =
     let
         grossPrice =
