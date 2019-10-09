@@ -59,8 +59,11 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ viewInput "text" "total cash" model.avaliableCash AvaliableCash
+        [ h1 [ style "text-align" "center" ] [ text "Stock Calculator" ]
+        , viewInput "text" "total cash" model.avaliableCash AvaliableCash
         , viewInput "text" "price per stock" model.pricePerStock PricePerStock
+        , br [] []
+        , br [] []
         , calculateMaxShares model.avaliableCash model.pricePerStock
         ]
 
