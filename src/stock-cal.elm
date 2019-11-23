@@ -1,6 +1,9 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
+import FormatNumber exposing (format, humanize)
+import FormatNumber.Humanize exposing (ZeroStrategy(..))
+import FormatNumber.Locales exposing (usLocale)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
@@ -95,9 +98,9 @@ commission =
     0.02
 
 
-tradeFee : Int
+tradeFee : Float
 tradeFee =
-    0
+    0.0003
 
 
 cessFee : Float
@@ -149,7 +152,7 @@ calculateMaxShares avaliableCash pricePerStock =
                     ++ "Amount needed to buy "
                     ++ String.fromInt minShares
                     ++ " shares is $"
-                    ++ (toDollars minAmountPrice |> String.fromFloat)
+                    ++ (toDollars minAmountPrice |> format usLocale)
                 )
             ]
 
@@ -165,31 +168,31 @@ calculateMaxShares avaliableCash pricePerStock =
                 ]
             , tr []
                 [ td [] [ text "Number of Shares" ]
-                , td [] [ text (String.fromInt ans.num) ]
+                , td [] [ text (humanize usLocale RemoveZeros <| toFloat ans.num) ]
                 ]
             , tr []
                 [ td [] [ text "Gross Price" ]
-                , td [] [ text <| "$ " ++ (String.fromFloat <| toDollars ans.gross) ]
+                , td [] [ text <| "$ " ++ (format usLocale <| toDollars ans.gross) ]
                 ]
             , tr []
                 [ td [] [ text "Cess Fee" ]
-                , td [] [ text <| "$ " ++ (String.fromFloat <| toDollars ans.ce) ]
+                , td [] [ text <| "$ " ++ (format usLocale <| toDollars ans.ce) ]
                 ]
             , tr []
                 [ td [] [ text "Trade Fee" ]
-                , td [] [ text <| "$ " ++ (String.fromFloat <| toDollars ans.tr) ]
+                , td [] [ text <| "$ " ++ (format usLocale <| toDollars ans.tr) ]
                 ]
             , tr []
                 [ td [] [ text "GCT" ]
-                , td [] [ text <| "$ " ++ (String.fromFloat <| toDollars ans.gc) ]
+                , td [] [ text <| "$ " ++ (format usLocale <| toDollars ans.gc) ]
                 ]
             , tr []
                 [ td [] [ text "Commission" ]
-                , td [] [ text <| "$ " ++ (String.fromFloat <| toDollars ans.comm) ]
+                , td [] [ text <| "$ " ++ (format usLocale <| toDollars ans.comm) ]
                 ]
             , tr []
                 [ td [] [ text "Final Price" ]
-                , td [] [ text <| "$ " ++ (String.fromFloat <| toDollars ans.fin) ]
+                , td [] [ text <| "$ " ++ (format usLocale <| toDollars ans.fin) ]
                 ]
             ]
 
@@ -240,7 +243,7 @@ fullCal numOfShares pricePerStock =
             (toFloat grossPrice * cessFee) |> truncate
 
         trade =
-            tradeFee
+            tradeFee * toFloat grossPrice |> truncate
 
         gctTax =
             toFloat (finalCommission + cess + trade) * gct |> truncate
