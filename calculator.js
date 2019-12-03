@@ -2696,7 +2696,7 @@ var _VirtualDom_mapEventTuple = F2(function(func, tuple)
 var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
-		C: func(record.C),
+		D: func(record.D),
 		be: record.be,
 		bc: record.bc
 	}
@@ -2966,7 +2966,7 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 		// 3 = Custom
 
 		var value = result.a;
-		var message = !tag ? value : tag < 3 ? value.a : value.C;
+		var message = !tag ? value : tag < 3 ? value.a : value.D;
 		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.be;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
@@ -3960,7 +3960,7 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 		impl.cz,
 		impl.cw,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.aA && impl.aA(sendToApp)
+			var divertHrefToApp = impl.aB && impl.aB(sendToApp)
 			var view = impl.cC;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
@@ -4035,7 +4035,7 @@ function _Browser_application(impl)
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		aA: function(sendToApp)
+		aB: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4226,10 +4226,10 @@ function _Browser_getViewport()
 	return {
 		bV: _Browser_getScene(),
 		b0: {
-			aX: _Browser_window.pageXOffset,
-			aY: _Browser_window.pageYOffset,
-			an: _Browser_doc.documentElement.clientWidth,
-			_: _Browser_doc.documentElement.clientHeight
+			aY: _Browser_window.pageXOffset,
+			aZ: _Browser_window.pageYOffset,
+			ao: _Browser_doc.documentElement.clientWidth,
+			aa: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4239,8 +4239,8 @@ function _Browser_getScene()
 	var body = _Browser_doc.body;
 	var elem = _Browser_doc.documentElement;
 	return {
-		an: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		_: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		ao: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
+		aa: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4264,14 +4264,14 @@ function _Browser_getViewportOf(id)
 	{
 		return {
 			bV: {
-				an: node.scrollWidth,
-				_: node.scrollHeight
+				ao: node.scrollWidth,
+				aa: node.scrollHeight
 			},
 			b0: {
-				aX: node.scrollLeft,
-				aY: node.scrollTop,
-				an: node.clientWidth,
-				_: node.clientHeight
+				aY: node.scrollLeft,
+				aZ: node.scrollTop,
+				ao: node.clientWidth,
+				aa: node.clientHeight
 			}
 		};
 	});
@@ -4303,16 +4303,16 @@ function _Browser_getElement(id)
 		return {
 			bV: _Browser_getScene(),
 			b0: {
-				aX: x,
-				aY: y,
-				an: _Browser_doc.documentElement.clientWidth,
-				_: _Browser_doc.documentElement.clientHeight
+				aY: x,
+				aZ: y,
+				ao: _Browser_doc.documentElement.clientWidth,
+				aa: _Browser_doc.documentElement.clientHeight
 			},
 			cb: {
-				aX: x + rect.left,
-				aY: y + rect.top,
-				an: rect.width,
-				_: rect.height
+				aY: x + rect.left,
+				aZ: y + rect.top,
+				ao: rect.width,
+				aa: rect.height
 			}
 		};
 	});
@@ -4349,7 +4349,7 @@ function _Browser_load(url)
 }
 var author$project$Main$Model = F2(
 	function (avaliableCash, pricePerStock) {
-		return {aI: avaliableCash, aR: pricePerStock};
+		return {aJ: avaliableCash, aS: pricePerStock};
 	});
 var author$project$Main$init = A2(author$project$Main$Model, '', '');
 var author$project$Main$update = F2(
@@ -4358,12 +4358,12 @@ var author$project$Main$update = F2(
 			var avaliableCash = msg.a;
 			return _Utils_update(
 				model,
-				{aI: avaliableCash});
+				{aJ: avaliableCash});
 		} else {
 			var pricePerStock = msg.a;
 			return _Utils_update(
 				model,
-				{aR: pricePerStock});
+				{aS: pricePerStock});
 		}
 	});
 var author$project$Main$AvaliableCash = function (a) {
@@ -4477,31 +4477,50 @@ var author$project$Main$fullCal = F2(
 		var gctTax = (((finalCommission + cess) + trade) * author$project$Main$gct) | 0;
 		var finalPrice = (((grossPrice + cess) + trade) + gctTax) + finalCommission;
 		var finalPricePerShare = (finalPrice / numOfShares) | 0;
-		return {a_: cess, a$: finalCommission, as: finalPrice, a2: finalPricePerShare, a3: gctTax, a4: grossPrice, a8: numOfShares, bh: trade};
+		return {a$: cess, a0: finalCommission, y: finalPrice, a3: finalPricePerShare, a4: gctTax, a5: grossPrice, ax: numOfShares, bh: trade};
 	});
-var elm$core$Basics$le = _Utils_le;
+var elm$core$Basics$and = _Basics_and;
+var elm$core$Basics$eq = _Utils_equal;
+var elm$core$Basics$gt = _Utils_gt;
 var elm$core$Basics$sub = _Basics_sub;
 var author$project$Main$findMaxShares = F4(
 	function (maxShare, minShare, price, cash) {
 		findMaxShares:
 		while (true) {
-			var priceInfo = A2(author$project$Main$fullCal, maxShare, price);
-			if (_Utils_cmp(priceInfo.as, cash) < 1) {
+			var mid = ((maxShare + minShare) / 2) | 0;
+			var priceInfo = A2(author$project$Main$fullCal, mid, price);
+			if (_Utils_eq(priceInfo.y, cash)) {
 				return priceInfo;
 			} else {
-				var $temp$maxShare = maxShare - 1,
-					$temp$minShare = minShare,
-					$temp$price = price,
-					$temp$cash = cash;
-				maxShare = $temp$maxShare;
-				minShare = $temp$minShare;
-				price = $temp$price;
-				cash = $temp$cash;
-				continue findMaxShares;
+				if ((_Utils_cmp(priceInfo.y, cash) < 0) && (_Utils_cmp(priceInfo.y, cash - price) > 0)) {
+					return priceInfo;
+				} else {
+					if (_Utils_cmp(priceInfo.y, cash) > 0) {
+						var $temp$maxShare = priceInfo.ax - 1,
+							$temp$minShare = minShare,
+							$temp$price = price,
+							$temp$cash = cash;
+						maxShare = $temp$maxShare;
+						minShare = $temp$minShare;
+						price = $temp$price;
+						cash = $temp$cash;
+						continue findMaxShares;
+					} else {
+						var $temp$maxShare = maxShare,
+							$temp$minShare = priceInfo.ax + 1,
+							$temp$price = price,
+							$temp$cash = cash;
+						maxShare = $temp$maxShare;
+						minShare = $temp$minShare;
+						price = $temp$price;
+						cash = $temp$cash;
+						continue findMaxShares;
+					}
+				}
 			}
 		}
 	});
-var author$project$Main$minShares = 100;
+var author$project$Main$minShares = 1;
 var elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
 		if (!maybe.$) {
@@ -4533,8 +4552,6 @@ var coinop_logan$elm_format_number$Parser$FormattedNumber = F5(
 var coinop_logan$elm_format_number$Parser$Negative = 2;
 var coinop_logan$elm_format_number$Parser$Positive = 0;
 var coinop_logan$elm_format_number$Parser$Zero = 1;
-var elm$core$Basics$eq = _Utils_equal;
-var elm$core$Basics$gt = _Utils_gt;
 var elm$core$List$foldl = F3(
 	function (func, acc, list) {
 		foldl:
@@ -4677,7 +4694,7 @@ var coinop_logan$elm_format_number$Parser$splitThousands = function (integers) {
 	return elm$core$List$reverse(
 		reversedSplitThousands(integers));
 };
-var elm$core$Basics$and = _Basics_and;
+var elm$core$Basics$le = _Utils_le;
 var elm$core$Char$toCode = _Char_toCode;
 var elm$core$Char$isDigit = function (_char) {
 	var code = elm$core$Char$toCode(_char);
@@ -5460,7 +5477,7 @@ var author$project$Main$calculateMaxShares = F2(
 	function (avaliableCash, pricePerStock) {
 		var price = author$project$Main$toCents(pricePerStock);
 		var temp = A2(author$project$Main$fullCal, author$project$Main$minShares, price);
-		var minAmountPrice = temp.as;
+		var minAmountPrice = temp.y;
 		var cash = author$project$Main$toCents(avaliableCash);
 		var maxShares = (cash / price) | 0;
 		if (_Utils_cmp(minAmountPrice, cash) > 0) {
@@ -5468,237 +5485,250 @@ var author$project$Main$calculateMaxShares = F2(
 				elm$html$Html$div,
 				_List_fromArray(
 					[
-						A2(elm$html$Html$Attributes$style, 'color', 'blue')
+						A2(elm$html$Html$Attributes$style, 'color', 'red')
 					]),
 				_List_fromArray(
 					[
 						elm$html$Html$text(
-						'Not enough funds to buy shares. ' + ('Amount needed to buy ' + (elm$core$String$fromInt(author$project$Main$minShares) + (' shares is $' + A2(
+						'Not enough funds to buy a share. ' + ('Amount needed to buy ' + (elm$core$String$fromInt(author$project$Main$minShares) + (' share is $' + A2(
 							coinop_logan$elm_format_number$FormatNumber$format,
 							coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
 							author$project$Main$toDollars(minAmountPrice))))))
 					]));
 		} else {
-			var ans = A4(author$project$Main$findMaxShares, maxShares, author$project$Main$minShares, price, cash);
-			return A2(
-				elm$html$Html$table,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('uk-table'),
-						elm$html$Html$Attributes$class('uk-table-divider')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						elm$html$Html$tr,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$th,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('Text')
-									])),
-								A2(
-								elm$html$Html$th,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('Amount')
-									]))
-							])),
-						A2(
-						elm$html$Html$tr,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('Number of Shares')
-									])),
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										A3(coinop_logan$elm_format_number$FormatNumber$humanize, coinop_logan$elm_format_number$FormatNumber$Locales$usLocale, 1, ans.a8))
-									]))
-							])),
-						A2(
-						elm$html$Html$tr,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('Gross Price')
-									])),
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										'$ ' + A2(
-											coinop_logan$elm_format_number$FormatNumber$format,
-											coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
-											author$project$Main$toDollars(ans.a4)))
-									]))
-							])),
-						A2(
-						elm$html$Html$tr,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('Cess Fee')
-									])),
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										'$ ' + A2(
-											coinop_logan$elm_format_number$FormatNumber$format,
-											coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
-											author$project$Main$toDollars(ans.a_)))
-									]))
-							])),
-						A2(
-						elm$html$Html$tr,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('Trade Fee')
-									])),
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										'$ ' + A2(
-											coinop_logan$elm_format_number$FormatNumber$format,
-											coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
-											author$project$Main$toDollars(ans.bh)))
-									]))
-							])),
-						A2(
-						elm$html$Html$tr,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('GCT')
-									])),
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										'$ ' + A2(
-											coinop_logan$elm_format_number$FormatNumber$format,
-											coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
-											author$project$Main$toDollars(ans.a3)))
-									]))
-							])),
-						A2(
-						elm$html$Html$tr,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('Commission')
-									])),
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										'$ ' + A2(
-											coinop_logan$elm_format_number$FormatNumber$format,
-											coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
-											author$project$Main$toDollars(ans.a$)))
-									]))
-							])),
-						A2(
-						elm$html$Html$tr,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('Final Price')
-									])),
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										'$ ' + A2(
-											coinop_logan$elm_format_number$FormatNumber$format,
-											coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
-											author$project$Main$toDollars(ans.as)))
-									]))
-							])),
-						A2(
-						elm$html$Html$tr,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('Final Price Per Share')
-									])),
-								A2(
-								elm$html$Html$td,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										'$ ' + A2(
-											coinop_logan$elm_format_number$FormatNumber$format,
-											coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
-											author$project$Main$toDollars(ans.a2)))
-									]))
-							]))
-					]));
+			if ((cash <= 0) || (price <= 0)) {
+				return A2(
+					elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2(elm$html$Html$Attributes$style, 'color', 'red')
+						]),
+					_List_fromArray(
+						[
+							elm$html$Html$text('Please enter the price per share.')
+						]));
+			} else {
+				var ans = A4(author$project$Main$findMaxShares, maxShares, author$project$Main$minShares, price, cash);
+				return A2(
+					elm$html$Html$table,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('uk-table'),
+							elm$html$Html$Attributes$class('uk-table-divider')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$tr,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$th,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('Text')
+										])),
+									A2(
+									elm$html$Html$th,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('Amount')
+										]))
+								])),
+							A2(
+							elm$html$Html$tr,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('Number of Shares')
+										])),
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text(
+											A3(coinop_logan$elm_format_number$FormatNumber$humanize, coinop_logan$elm_format_number$FormatNumber$Locales$usLocale, 1, ans.ax))
+										]))
+								])),
+							A2(
+							elm$html$Html$tr,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('Gross Price')
+										])),
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text(
+											'$ ' + A2(
+												coinop_logan$elm_format_number$FormatNumber$format,
+												coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
+												author$project$Main$toDollars(ans.a5)))
+										]))
+								])),
+							A2(
+							elm$html$Html$tr,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('Cess Fee')
+										])),
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text(
+											'$ ' + A2(
+												coinop_logan$elm_format_number$FormatNumber$format,
+												coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
+												author$project$Main$toDollars(ans.a$)))
+										]))
+								])),
+							A2(
+							elm$html$Html$tr,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('Trade Fee')
+										])),
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text(
+											'$ ' + A2(
+												coinop_logan$elm_format_number$FormatNumber$format,
+												coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
+												author$project$Main$toDollars(ans.bh)))
+										]))
+								])),
+							A2(
+							elm$html$Html$tr,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('GCT')
+										])),
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text(
+											'$ ' + A2(
+												coinop_logan$elm_format_number$FormatNumber$format,
+												coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
+												author$project$Main$toDollars(ans.a4)))
+										]))
+								])),
+							A2(
+							elm$html$Html$tr,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('Commission')
+										])),
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text(
+											'$ ' + A2(
+												coinop_logan$elm_format_number$FormatNumber$format,
+												coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
+												author$project$Main$toDollars(ans.a0)))
+										]))
+								])),
+							A2(
+							elm$html$Html$tr,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('Final Price')
+										])),
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text(
+											'$ ' + A2(
+												coinop_logan$elm_format_number$FormatNumber$format,
+												coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
+												author$project$Main$toDollars(ans.y)))
+										]))
+								])),
+							A2(
+							elm$html$Html$tr,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('Final Price Per Share')
+										])),
+									A2(
+									elm$html$Html$td,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text(
+											'$ ' + A2(
+												coinop_logan$elm_format_number$FormatNumber$format,
+												coinop_logan$elm_format_number$FormatNumber$Locales$usLocale,
+												author$project$Main$toDollars(ans.a3)))
+										]))
+								]))
+						]));
+			}
 		}
 	});
 var elm$html$Html$input = _VirtualDom_node('input');
@@ -5772,10 +5802,10 @@ var author$project$Main$view = function (model) {
 					[
 						elm$html$Html$text('Stock Calculator')
 					])),
-				A4(author$project$Main$viewInput, 'text', 'total cash', model.aI, author$project$Main$AvaliableCash),
-				A4(author$project$Main$viewInput, 'text', 'price per stock', model.aR, author$project$Main$PricePerStock),
+				A4(author$project$Main$viewInput, 'text', 'total cash', model.aJ, author$project$Main$AvaliableCash),
+				A4(author$project$Main$viewInput, 'text', 'price per stock', model.aS, author$project$Main$PricePerStock),
 				A2(elm$html$Html$br, _List_Nil, _List_Nil),
-				A2(author$project$Main$calculateMaxShares, model.aI, model.aR)
+				A2(author$project$Main$calculateMaxShares, model.aJ, model.aS)
 			]));
 };
 var elm$core$Platform$Cmd$batch = _Platform_batch;

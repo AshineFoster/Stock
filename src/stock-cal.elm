@@ -114,7 +114,7 @@ gct =
 
 minShares : Int
 minShares =
-    100
+    1
 
 
 minCommission : Int
@@ -145,15 +145,18 @@ calculateMaxShares avaliableCash pricePerStock =
             temp.fin
     in
     if minAmountPrice > cash then
-        div [ style "color" "blue" ]
+        div [ style "color" "red" ]
             [ text
-                ("Not enough funds to buy shares. "
+                ("Not enough funds to buy a share. "
                     ++ "Amount needed to buy "
                     ++ String.fromInt minShares
-                    ++ " shares is $"
+                    ++ " share is $"
                     ++ (toDollars minAmountPrice |> format usLocale)
                 )
             ]
+
+    else if (cash <= 0) || (price <= 0) then
+        div [ style "color" "red" ] [ text "Please enter the price per share." ]
 
     else
         let
@@ -217,14 +220,23 @@ findMaxShares maxShare minShare price cash =
     -- TODO: write function to calculate the max number of shares
     -- stop condition: if (maxShare <= cash) and (maxShare > cash - price)
     let
+        mid =
+            (maxShare + minShare) // 2
+
         priceInfo =
-            fullCal maxShare price
+            fullCal mid price
     in
-    if priceInfo.fin <= cash then
+    if priceInfo.fin == cash then
         priceInfo
 
+    else if (priceInfo.fin < cash) && (priceInfo.fin > (cash - price)) then
+        priceInfo
+
+    else if priceInfo.fin > cash then
+        findMaxShares (priceInfo.num - 1) minShare price cash
+
     else
-        findMaxShares (maxShare - 1) minShare price cash
+        findMaxShares maxShare (priceInfo.num + 1) price cash
 
 
 fullCal : Int -> Int -> Info
