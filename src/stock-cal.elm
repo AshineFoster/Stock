@@ -66,14 +66,13 @@ view model =
         , viewInput "text" "total cash" model.avaliableCash AvaliableCash
         , viewInput "text" "price per stock" model.pricePerStock PricePerStock
         , br [] []
-        , br [] []
         , calculateMaxShares model.avaliableCash model.pricePerStock
         ]
 
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
 viewInput t p v toMsg =
-    input [ type_ t, placeholder p, value v, onInput toMsg ] []
+    input [ class "uk-input", class "uk-margin-bottom", type_ t, placeholder p, value v, onInput toMsg ] []
 
 
 toCents : String -> Int
@@ -146,7 +145,7 @@ calculateMaxShares avaliableCash pricePerStock =
             temp.fin
     in
     if minAmountPrice > cash then
-        div [ style "color" "red" ]
+        div [ style "color" "blue" ]
             [ text
                 ("Not enough funds to buy shares. "
                     ++ "Amount needed to buy "
@@ -161,7 +160,7 @@ calculateMaxShares avaliableCash pricePerStock =
             ans =
                 findMaxShares maxShares minShares price cash
         in
-        table []
+        table [ class "uk-table", class "uk-table-divider" ]
             [ tr []
                 [ th [] [ text "Text" ]
                 , th [] [ text "Amount" ]
@@ -194,6 +193,10 @@ calculateMaxShares avaliableCash pricePerStock =
                 [ td [] [ text "Final Price" ]
                 , td [] [ text <| "$ " ++ (format usLocale <| toDollars ans.fin) ]
                 ]
+            , tr []
+                [ td [] [ text "Final Price Per Share" ]
+                , td [] [ text <| "$ " ++ (format usLocale <| toDollars ans.fpps) ]
+                ]
             ]
 
 
@@ -205,6 +208,7 @@ type alias Info =
     , gc : Int
     , fin : Int
     , num : Int
+    , fpps : Int
     }
 
 
@@ -250,6 +254,9 @@ fullCal numOfShares pricePerStock =
 
         finalPrice =
             grossPrice + cess + trade + gctTax + finalCommission
+
+        finalPricePerShare =
+            finalPrice // numOfShares
     in
     { gross = grossPrice
     , comm = finalCommission
@@ -258,4 +265,5 @@ fullCal numOfShares pricePerStock =
     , gc = gctTax
     , fin = finalPrice
     , num = numOfShares
+    , fpps = finalPricePerShare
     }
