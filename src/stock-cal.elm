@@ -123,7 +123,7 @@ minCommission =
 
 
 
--- The maximum that can be entered without causing integer overflow: 21,474,836.47
+-- The maximum that can be entegray without causing integer overflow: 21,474,836.47
 
 
 calculateMaxShares : String -> String -> Html msg
@@ -145,7 +145,7 @@ calculateMaxShares avaliableCash pricePerStock =
             temp.fin
     in
     if minAmountPrice > cash then
-        div [ style "color" "red" ]
+        div [ style "color" "gray" ]
             [ text
                 ("Not enough funds to buy a share. "
                     ++ "Amount needed to buy "
@@ -156,7 +156,7 @@ calculateMaxShares avaliableCash pricePerStock =
             ]
 
     else if (cash <= 0) || (price <= 0) then
-        div [ style "color" "red" ] [ text "Please enter the price per share." ]
+        div [ style "color" "gray" ] [ text "Please enter the price per share." ]
 
     else
         let

@@ -5485,7 +5485,7 @@ var author$project$Main$calculateMaxShares = F2(
 				elm$html$Html$div,
 				_List_fromArray(
 					[
-						A2(elm$html$Html$Attributes$style, 'color', 'red')
+						A2(elm$html$Html$Attributes$style, 'color', 'gray')
 					]),
 				_List_fromArray(
 					[
@@ -5501,7 +5501,7 @@ var author$project$Main$calculateMaxShares = F2(
 					elm$html$Html$div,
 					_List_fromArray(
 						[
-							A2(elm$html$Html$Attributes$style, 'color', 'red')
+							A2(elm$html$Html$Attributes$style, 'color', 'gray')
 						]),
 					_List_fromArray(
 						[
